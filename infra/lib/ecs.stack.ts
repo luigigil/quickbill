@@ -25,12 +25,10 @@ export class EcsStack extends cdk.Stack {
     // Create a load-balanced Fargate service and make it public
     const service = new ecsPatterns.ApplicationLoadBalancedFargateService(this, "QuickbillFargateService", {
       cluster: cluster, // Required
-      cpu: 256, // Default is 256
-      desiredCount: 1, // Default is 1
-      memoryLimitMiB: 512, // Default is 512
-      publicLoadBalancer: true, // Default is true
-      idleTimeout: cdk.Duration.minutes(5), // 5min 
       loadBalancer: elb,
+      desiredCount: 1, // Default is 1
+      cpu: 256, // Default is 256
+      memoryLimitMiB: 512, // Default is 512
       runtimePlatform: {
         cpuArchitecture: ecs.CpuArchitecture.ARM64,
         operatingSystemFamily: ecs.OperatingSystemFamily.LINUX
