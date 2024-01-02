@@ -1,14 +1,17 @@
 import fastify from 'fastify'
 import { pingRoute } from '@routes/ping.route'
-import { echoRoute } from './routes/echo.route'
+import { echoRoute } from '@routes/echo.route'
+import { invoicesRoute } from '@routes/invoices.route'
 
 const startServer = () => {
   const server = fastify()
+
   const port = parseInt(process.env.PORT || '8080')
 
   // define routes
   pingRoute(server)
   echoRoute(server)
+  invoicesRoute(server)
 
   server.listen({ port, host: '0.0.0.0' }, (err, address) => {
     if (err) {
