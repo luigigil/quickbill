@@ -34,7 +34,7 @@ export class EcsStack extends cdk.Stack {
         operatingSystemFamily: ecs.OperatingSystemFamily.LINUX
       },
       taskImageOptions: {
-        image: ecs.ContainerImage.fromEcrRepository(ecrRepository, 'v0.0.1'),
+        image: ecs.ContainerImage.fromEcrRepository(ecrRepository, process.env.PROJECT_IMAGE_TAG || 'latest'),
         containerPort: 8080,
         enableLogging: false,
         containerName: 'quickbill',

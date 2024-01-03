@@ -28,6 +28,8 @@
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
+    "@fastify/swagger": "^8.13.0",
+    "@fastify/swagger-ui": "^2.0.1",
     "@types/uuid": "^9.0.7",
     "fastify": "^4.25.2",
     "knex": "^3.1.0",

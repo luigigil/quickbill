@@ -11,23 +11,17 @@ export class InvoiceService {
     console.log('Invoice Service constructor');
   }
 
-  async fetchInvoices(): Promise<Invoice[] | undefined> {
+  async fetchInvoices(): Promise<Invoice[]> {
     try {
       const invoices = await this.db.select<Invoice[]>('*').from('invoices');
       return invoices;
     } catch (error) {
-      console.error('Error fetching invoices:', error);
-      return undefined;
+      throw new Error(`Error fetching invoices: ${error}`);
     }
   }
 
-  async fetchInvoiceById(id: string): Promise<Invoice | undefined> {
+  async fetchInvoiceById(id: string): Promise<Invoice | null> {
     try {
-      const invoiceItems = await this.db
-        .select<InvoiceItem[]>('description', 'price', 'quantity')
-        .from('invoice_items')
-        .where('invoiceId', id);
-
       const invoice = await this.db
         .select<Invoice>('*')
         .from('invoices')
@@ -35,8 +29,13 @@ export class InvoiceService {
         .first();
 
       if (invoice == null) {
-        return undefined;
+        return null;
       }
+
+      const invoiceItems = await this.db
+        .select<InvoiceItem[]>('description', 'price', 'quantity')
+        .from('invoice_items')
+        .where('invoiceId', id);
 
       const invoiceWithItems: Invoice = {
         ...invoice,
@@ -45,16 +44,22 @@ export class InvoiceService {
 
       return invoiceWithItems;
     } catch (error) {
-      console.error('Error fetching invoice:', error);
-      return undefined;
+      throw new Error(`Error fetching invoice: ${error}`);
     }
   }
 
-  async deleteInvoice(id: string): Promise<void> {
+  async deleteInvoice(id: string): Promise<string | null> {
     try {
+      const invoice = await this.db.select<Invoice>('*').from('invoices').where('id', id).first();
+
+      if (invoice == null) {
+        return null;
+      }
+
       await this.db.table('invoices').where('id', id).del();
+      return invoice.id as string;
     } catch (error) {
-      console.error('Error deleting invoice:', error);
+      throw new Error(`Error deleting invoice: ${error}`);
     }
   }
 
@@ -83,7 +88,7 @@ export class InvoiceService {
 
       const newItems = await this.db
         .table('invoice_items')
-        .insert(itemsToCreate).returning('*');
+        .insert(itemsToCreate).returning(['description', 'price', 'quantity']);
 
       const newInvoiceWithItems: Invoice = {
         ...newInvoice[0],
@@ -92,12 +97,11 @@ export class InvoiceService {
 
       return newInvoiceWithItems;
     } catch (error) {
-      console.error('Error creating invoice:', error);
-      return null;
+      throw new Error(`Error creating invoice: ${error}`);
     }
   }
 
-  async updateInvoice(invoice: Invoice): Promise<Invoice | null> {
+  async updateInvoice(invoice: Invoice): Promise<Invoice> {
     try {
       const updatedInvoice = await this.db
         .table('invoices')
@@ -113,8 +117,7 @@ export class InvoiceService {
 
       return updatedInvoice[0];
     } catch (error) {
-      console.log('Error updating invoice:', error);
-      return null;
+      throw new Error(`Error updating invoice: ${error}`);
     }
   }
 }
