@@ -37,6 +37,7 @@
       <ul>
         <li><a href="#project-folder">Project Folder</a></li>
         <li><a href="#infra-folder">Infra Folder</a></li>
+        <li><a href="#architecture">Architecture</a></li>
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
@@ -114,6 +115,8 @@ yarn install
 yarn dev
 ```
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 ### Infra Folder
 
 This folder contains the AWS CDK project that will be used to deploy the application to the cloud. It contains the infrastructure as code for the application with the AWS services that will be used by the application.
@@ -135,6 +138,38 @@ cdk deploy
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+### Architecture
+
+#### Description
+
+The architecture will be described in details here later.
+
+#### Strategies
+
+The project can be deployed to AWS using different strategies:
+- AWS ECS w/ Fargate
+  - The application can be deployed to AWS ECS using Fargate. This is a serverless container service that allows you to run containers without managing the infrastructure.
+  - The following strategies can be used to deploy the application to AWS ECS:
+    - API is deployed as a container that scales based on demand
+    - Event-driven services are deployed as containers that are triggered by events
+- AWS Lambda
+  - The application can be deployed to AWS Lambda using the serverless framework. This is a serverless compute service that allows you to run code without managing the infrastructure.
+  - The following strategies can be used to deploy the application to AWS Lambda:
+    - API is deployed as a serverless function that scales based on demand
+      - Some experimentation will be needed here, since we can deploy the API as a single serverless function or as a group of serverless functions divided by domain or resource
+      - The idea is to avoid cold starts and to provide a scalable and cost-effective solution for the application
+      - Also, the size of the serverless function will be a challenge, since we need to keep it small to avoid cold starts, but we also need to keep it large enough to handle the application and avoid code starts as well.
+      - A mechanism to break the application up and deploy smaller units of code will be needed
+    - Event-driven services are deployed as serverless functions that are triggered by events
+- AWS EKS
+  - The application can be deployed to AWS EKS. This is a managed Kubernetes service that allows you to run Kubernetes. It's a different approach than ECS.
+  - The following strategies can be used to deploy the application to AWS EKS using the same strategies as ECS.
+
+Each strategy has its own pros and cons. The idea is to explore each one and understand the best approach for the application. This step is a learning process and will help to understand different strategies and their trade-offs.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
 <!-- USAGE EXAMPLES -->
 ## Usage
 
@@ -143,7 +178,6 @@ Use this space to show useful examples of how a project can be used. Additional 
 _For more examples, please refer to the [Documentation](https://example.com)_
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 
 
 <!-- ROADMAP -->
